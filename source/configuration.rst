@@ -47,7 +47,7 @@ Install the essentials
    taskwarrior vit jackd2 qjackctl pulseaudio \
    pulseaudio-module-jack pavucontrol pulsemixer \
    a2jmidid python3-venv python3-pip pipx \
-   xclip tig
+   xclip tig id3v2 libglib2.0-bin xdotool
 
    $ usermod -aG sudo <username>
    $ chsh <username> -s /bin/zsh
