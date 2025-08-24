@@ -2,7 +2,7 @@ name: Deploy Sphinx documentation to Pages
 
 on:
   push:
-    branches: ["master"]   # or "master" if that's your branch
+    branches: ["master"]   # or "main" depending on your branch
   workflow_dispatch:
 
 permissions:
@@ -30,6 +30,7 @@ jobs:
       - name: Build Sphinx documentation
         run: |
           sphinx-build -b html source docs
+          touch docs/.nojekyll    # disable Jekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
