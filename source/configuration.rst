@@ -38,7 +38,7 @@ Install the essentials
    $ apt-get update
    $ apt-get upgrade
 
-   $ apt-get install sudo zsh vim \
+   $ apt-get install sudo zsh vim ipython3 \
    zsh-syntax-highlighting cmus tmux mpv \
    alsa-tools alsa-utils i3 i3blocks rofi xinit \
    xorg curl git thunar sshfs terminator starship \
@@ -47,7 +47,8 @@ Install the essentials
    taskwarrior vit jackd2 qjackctl pulseaudio \
    pulseaudio-module-jack pavucontrol pulsemixer \
    a2jmidid python3-venv python3-pip pipx \
-   xclip tig id3v2 libglib2.0-bin xdotool
+   xclip tig id3v2 libglib2.0-bin xdotool lmms arduino \ 
+   jq python3-ipdb python3-pudb
 
    $ usermod -aG sudo <username>
    $ chsh <username> -s /bin/zsh
@@ -56,6 +57,35 @@ Install the essentials
 
 User
 ^^^^
+
+System Maintenance
+""""""""""""""""""
+
+.. code-block:: console
+
+   # Refresh package index
+   sudo apt update
+   
+   # Upgrade installed packages (safe)
+   sudo apt upgrade
+   
+   # List packages that can be upgraded
+   apt list --upgradable
+   
+   # Full upgrade (allow deps to change, occasionally useful)
+   sudo apt full-upgrade
+   
+   # Install a package
+   sudo apt install <package>
+   
+   # Remove unneeded packages
+   sudo apt autoremove
+   
+   # Clean cached .deb files
+   sudo apt clean
+
+
+
 
 Fetch the dotfiles and assets
 """""""""""""""""""""""""""""
@@ -126,6 +156,12 @@ midi bridge between jack and alsa.
    pactl load-module module-jack-source
    # send PA to Jack sink in pavucontrol
    a2jmidid -e
+
+.. code-block:: console
+
+   # I line-in must be heard on speakers
+   pactl load-module module-loopback latency_msec=1
+
 
 python virtual environments
 """""""""""""""""""""""""""
