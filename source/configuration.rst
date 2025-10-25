@@ -48,7 +48,7 @@ Install the essentials
    pulseaudio-module-jack pavucontrol pulsemixer \
    a2jmidid python3-venv python3-pip pipx \
    xclip tig id3v2 libglib2.0-bin xdotool lmms arduino \ 
-   jq python3-ipdb python3-pudb
+   jq python3-ipdb python3-pudb nodejs npm
 
    $ usermod -aG sudo <username>
    $ chsh <username> -s /bin/zsh
@@ -291,4 +291,102 @@ Github CLI setup
    # One off authentication
    gh auth login
 
+npm
+"""
 
+Initiate Project
+................
+
+.. code-block:: console
+
+   mkdir project_name
+   cd $_
+   npm init -y
+   npm install p5 # install specific modules
+   npm install # install modules from package.json
+
+Configure Bundler
+.................
+
+
+
+.. code-block:: json
+   :caption: ./package.json
+   
+   // ...
+   "scripts": {
+       "test": "echo \"Error: no test specified\" && exit 1",
+       "dev": "vite",
+       "build": "vite build",
+       "build-local": "vite build --config vite.config.local.js"
+   // ...
+
+.. code-block:: html
+   :caption: ./index.html
+
+   <!DOCTYPE html>
+   <html lang="en">
+     <head>
+       <meta charset="UTF-8" />
+       <title>My Presentation</title>
+       <script type="module" src="/main.js"></script>
+     </head>
+     <body></body>
+   </html>
+
+
+
+.. code-block:: javascript
+   :caption: ./main.js
+
+   import p5 from "p5";
+   
+   new p5((s) => {
+     s.setup = () => {
+       s.createCanvas(400, 200);
+     };
+     s.draw = () => {
+       s.background(200);
+       s.ellipse(200, 100, 100, 100);
+     };
+   });
+
+
+Development Server
+..................
+
+.. code-block:: console
+
+   npm run dev
+   npm run build
+
+
+
+Standalone Version
+..................
+
+.. code-block:: javascript
+   :caption: ./vite.config.js
+
+   // vite.config.js
+   import { defineConfig } from "vite";
+   import { viteSingleFile } from "vite-plugin-singlefile";
+   
+   export default defineConfig(({ command, mode }) => {
+     const isSingle = mode === "singlefile";
+   
+     return {
+       base: "./",
+       plugins: isSingle ? [viteSingleFile()] : [],
+       build: {
+         outDir: isSingle ? "dist-single" : "dist",
+       },
+     };
+   });
+
+
+
+.. code-block:: console
+
+   npm install --save-dev vite-plugin-singlefile
+   npm run build
