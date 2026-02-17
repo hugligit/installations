@@ -134,6 +134,9 @@ tmux
 sound
 """""
 
+Setup
+.....
+
 Find the right card and set it in `~/.asoundrc`
 
 .. code-block:: console
@@ -145,6 +148,9 @@ Find the right card and set it in `~/.asoundrc`
 
    defaults.pcm.card 2
    defaults.ctl.card 2
+
+jackd
+.....
 
 Start jack server, jack sink for pulseaudio and
 midi bridge between jack and alsa.
@@ -161,6 +167,42 @@ midi bridge between jack and alsa.
 
    # I line-in must be heard on speakers
    pactl load-module module-loopback latency_msec=1
+
+
+
+Restart pulseadio
+.................
+
+Sometimes the audio can be hijacked by `fluidsynth` on my system
+
+.. code-block:: console
+
+   # systemctl --user stop fluidsynth.service
+   systemctl --user restart pipewire
+   systemctl --user restart wireplumber
+
+Connect line-in
+...............
+
+.. code-block:: console
+
+   pactl load-module module-loopback
+
+.. code-block:: console
+
+   pactl unload-module module-loopback
+
+
+Record sound output
+...................
+
+.. code-block:: console
+
+   pactl list short sources
+
+.. code-block:: console
+
+   parec -d alsa_output* --file-format=wav out.wav
 
 
 python virtual environments
@@ -390,3 +432,104 @@ Standalone Version
 
    npm install --save-dev vite-plugin-singlefile
    npm run build
+
+Taking Screenshots
+""""""""""""""""""
+
+
+.. code-block:: console
+
+   # add delay
+   sleep 0.2 && maim  ~/Pictures/region.png# add delay# add delay
+   
+   # select region
+   m -s ~/Pictures/region.png
+   
+   # screenshot to clipboard
+   maim -s | xclip -selection clipboard -t image/png
+
+
+Configuring Touchpads
+"""""""""""""""""""""
+
+.. code-block:: console
+
+   # list devices, look to names including "Touchpad"
+   xinput list
+
+   # Enable left/right/middle click with 1,2,3 finger tap
+   xinput set-prop "Telink Wireless PTP Receiver Touchpad" "libinput Tapping Enabled" 1
+
+   # set speed -1 .. 1 
+   xinput set-prop "Telink Wireless PTP Receiver Touchpad" "libinput Accel Speed" 0.3
+
+   
+   # list properties available to the device
+   xinput list-props "Telink Wireless PTP Receiver Touchpad"
+
+eza completion
+""""""""""""""
+
+.. code-block:: console
+
+   curl -L https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza \
+   -o ~/.oh-my-zsh/completions/_eza
+
+Arduino Workflow
+""""""""""""""""
+
+Install `arduino-cli`
+.....................
+
+.. code-block:: console
+
+   curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=$HOME/.local/bin sh
+   # ensure ~/.local/bin is in your PATH
+
+
+   # Initial config & core install (example for AVR Uno/Nano):
+
+   arduino-cli config init
+   arduino-cli core update-index
+   arduino-cli core install arduino:avr
+
+   ## Useful commands (one-liners you’ll run from a tmux pane)
+   ## ________________________________________________________
+
+   # Find the serial device (after plugging board in):
+   ls /dev/ttyACM* /dev/ttyUSB* 2>/dev/null || echo "no device"
+
+   # Compile a sketch (replace fqbn accordingly):
+   arduino-cli compile --fqbn arduino:avr:uno /path/to/YourSketch
+
+   # Compile and upload in one go:
+   arduino-cli compile --fqbn arduino:avr:uno --upload -p /dev/ttyUSB0 /path/to/YourSketch
+   arduino-cli compile --fqbn arduino:avr:uno --upload --port /dev/ttyUSB0 /path/to/YourSketch
+
+   # Start serial monitor (in another tmux pane):
+   arduino-cli monitor -p /dev/ttyUSB0 -b 115200
+
+
+.. code-block:: makefile
+   :caption: Makefile (drop in sketch folder)
+   
+   FQBN = arduino:avr:uno
+   PORT = /dev/ttyUSB0
+   SKETCH = MySketch
+   
+   .PHONY: all compile upload monitor clean
+   
+   all: upload
+   
+   compile:
+   	arduino-cli compile --fqbn $(FQBN) $(SKETCH)
+   
+   upload: compile
+   	arduino-cli upload --fqbn $(FQBN) --port $(PORT) $(SKETCH)
+   
+   monitor:
+   	arduino-cli monitor -p $(PORT) -b 115200
+   
+   clean:
+   	# arduino-cli doesn't have a 'clean' but you can remove build dir if needed
+   	rm -rf $(shell arduino-cli compile --fqbn $(FQBN) $(SKETCH) 2>/dev/null | sed -n 's/^.*Using.*work dir: //p')
