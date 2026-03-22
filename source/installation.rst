@@ -1,9 +1,9 @@
 Installation
-------------
+************
 
 
 Booting from installation media
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+===============================
 
 .. code-block:: console
 
