@@ -1,12 +1,15 @@
 Configuration
--------------
+*************
 
+.. Root {{{
 
 Root
-^^^^
+====
+
+.. Hide GRUB menu {{{
 
 Hide GRUB menu
-""""""""""""""
+--------------
 
 .. code-block:: ini
    :caption: /etc/default/grub
@@ -20,8 +23,11 @@ Hide GRUB menu
 
    $ update-grub
 
+.. }}}
+.. Improve `agetty` legibility {{{
+
 Improve `agetty` legibility
-"""""""""""""""""""""""""""
+---------------------------
 
 .. code-block:: ini
    :caption: /etc/default/console-setup
@@ -30,8 +36,12 @@ Improve `agetty` legibility
    FONTFACE="Terminus"
    FONTSIZE="32x16"
 
+
+.. }}}
+.. Install the essentials {{{
+
 Install the essentials
-""""""""""""""""""""""
+----------------------
 
 .. code-block:: console
 
@@ -54,12 +64,18 @@ Install the essentials
    $ chsh <username> -s /bin/zsh
    $ chsh -s /bin/zsh
 
+.. }}}
+
+.. }}}
+.. User {{{
 
 User
-^^^^
+====
+
+.. System Maintenance {{{
 
 System Maintenance
-""""""""""""""""""
+------------------
 
 .. code-block:: console
 
@@ -85,10 +101,11 @@ System Maintenance
    sudo apt clean
 
 
-
+.. }}}
+.. Fetch the dotfiles and assets {{{
 
 Fetch the dotfiles and assets
-"""""""""""""""""""""""""""""
+-----------------------------
 
 .. code-block:: console
 
@@ -105,16 +122,21 @@ Fetch the dotfiles and assets
    git clone https://github.com/hugligit/configure-debian-docs.git install-info
 
 
+.. }}}
+.. zsh {{{
 
 zsh
-"""
+---
 
 .. code-block:: console
 
    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+.. }}}
+.. vim {{{
+
 vim
-"""
+---
 
 .. code-block:: console
 
@@ -123,16 +145,23 @@ vim
    git clone https://github.com/k-takata/minpac.git
    # vim: PackUpdate
 
+.. }}}
+.. tmux {{{
+
 tmux
-""""
+----
 
 .. code-block:: console
 
    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
    # tmux update plugins: leader I
 
+
+.. }}}
+.. sound {{{
+
 sound
-"""""
+-----
 
 Setup
 .....
@@ -205,8 +234,188 @@ Record sound output
    parec -d alsa_output* --file-format=wav out.wav
 
 
+.. }}}
+.. bluetooth {{{
+
+bluetooth
+---------
+
+# sudo apt install --no-install-recommends bluez bluez-tools blueman
+
+
+.. }}}
+.. Taking Screenshots {{{
+
+Taking Screenshots
+------------------
+
+
+.. code-block:: console
+
+   # add delay
+   sleep 0.2 && maim  ~/Pictures/region.png# add delay# add delay
+   
+   # select region
+   m -s ~/Pictures/region.png
+   
+   # screenshot to clipboard
+   maim -s | xclip -selection clipboard -t image/png
+
+
+.. }}}
+.. Configuring Touchpads {{{
+
+Configuring Touchpads
+---------------------
+
+.. code-block:: console
+
+   # list devices, look to names including "Touchpad"
+   xinput list
+
+   # Enable left/right/middle click with 1,2,3 finger tap
+   xinput set-prop "Telink Wireless PTP Receiver Touchpad" "libinput Tapping Enabled" 1
+
+   # set speed -1 .. 1 
+   xinput set-prop "Telink Wireless PTP Receiver Touchpad" "libinput Accel Speed" 0.3
+
+   
+   # list properties available to the device
+   xinput list-props "Telink Wireless PTP Receiver Touchpad"
+
+
+.. }}}
+.. eza completion {{{
+
+eza completion
+--------------
+
+.. code-block:: console
+
+   curl -L https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza \
+   -o ~/.oh-my-zsh/completions/_eza
+
+
+.. }}}
+.. }}}
+
+.. Workflows {{{
+
+Workflows
+*********
+
+All of these are a bit chaotic at the moment. I will have to restructure most
+of the entries, but the priority is to capture and document what I've learnt
+before I forget.
+
+.. npm {{{
+
+npm
+===
+
+Initiate Project
+----------------
+
+.. code-block:: console
+
+   mkdir project_name
+   cd $_
+   npm init -y
+   npm install p5 # install specific modules
+   npm install # install modules from package.json
+
+Configure Bundler
+-----------------
+
+
+
+.. code-block:: json
+   :caption: ./package.json
+   
+   // ...
+   "scripts": {
+       "test": "echo \"Error: no test specified\" && exit 1",
+       "dev": "vite",
+       "build": "vite build",
+       "build-local": "vite build --config vite.config.local.js"
+   // ...
+
+.. code-block:: html
+   :caption: ./index.html
+
+   <!DOCTYPE html>
+   <html lang="en">
+     <head>
+       <meta charset="UTF-8" />
+       <title>My Presentation</title>
+       <script type="module" src="/main.js"></script>
+     </head>
+     <body></body>
+   </html>
+
+
+
+.. code-block:: javascript
+   :caption: ./main.js
+
+   import p5 from "p5";
+   
+   new p5((s) => {
+     s.setup = () => {
+       s.createCanvas(400, 200);
+     };
+     s.draw = () => {
+       s.background(200);
+       s.ellipse(200, 100, 100, 100);
+     };
+   });
+
+
+Development Server
+------------------
+
+.. code-block:: console
+
+   npm run dev
+   npm run build
+
+
+
+Standalone Version
+------------------
+
+.. code-block:: javascript
+   :caption: ./vite.config.js
+
+   // vite.config.js
+   import { defineConfig } from "vite";
+   import { viteSingleFile } from "vite-plugin-singlefile";
+   
+   export default defineConfig(({ command, mode }) => {
+     const isSingle = mode === "singlefile";
+   
+     return {
+       base: "./",
+       plugins: isSingle ? [viteSingleFile()] : [],
+       build: {
+         outDir: isSingle ? "dist-single" : "dist",
+       },
+     };
+   });
+
+
+
+.. code-block:: console
+
+   npm install --save-dev vite-plugin-singlefile
+   npm run build
+
+
+.. }}}
+.. python virtual environments {{{
+
 python virtual environments
-"""""""""""""""""""""""""""
+===========================
 
 Debian doesn't like installing pip modules outside
 the virtual environments. For projects requiring
@@ -255,16 +464,15 @@ root:
    lemon_curry = "sample:main" 
    # say-hi = "hello:main" # another hypothetical one
 
-bluetooth
-"""""""""
 
-# sudo apt install --no-install-recommends bluez bluez-tools blueman
+.. }}}
+.. github {{{
 
 github
-""""""
+======
 
 Once only
-.........
+---------
 
 .. code-block:: console
 
@@ -277,7 +485,7 @@ Once only
    xclip -sel clip < ~/.ssh/id_ed25519.pub
 
 For each terminal session
-.........................
+-------------------------
 
 .. code-block:: console
 
@@ -289,7 +497,7 @@ For each terminal session
    
 
 Add existing repositories to github
-...................................
+-----------------------------------
 
 Add remote alias that points to the githup repository
 
@@ -309,7 +517,7 @@ Simple `pull` and `push` commands are sufficient from then on.
    git pull
 
 Github CLI setup
-................
+----------------
 
 .. code-block:: console
 
@@ -333,153 +541,15 @@ Github CLI setup
    # One off authentication
    gh auth login
 
-npm
-"""
 
-Initiate Project
-................
-
-.. code-block:: console
-
-   mkdir project_name
-   cd $_
-   npm init -y
-   npm install p5 # install specific modules
-   npm install # install modules from package.json
-
-Configure Bundler
-.................
-
-
-
-.. code-block:: json
-   :caption: ./package.json
-   
-   // ...
-   "scripts": {
-       "test": "echo \"Error: no test specified\" && exit 1",
-       "dev": "vite",
-       "build": "vite build",
-       "build-local": "vite build --config vite.config.local.js"
-   // ...
-
-.. code-block:: html
-   :caption: ./index.html
-
-   <!DOCTYPE html>
-   <html lang="en">
-     <head>
-       <meta charset="UTF-8" />
-       <title>My Presentation</title>
-       <script type="module" src="/main.js"></script>
-     </head>
-     <body></body>
-   </html>
-
-
-
-.. code-block:: javascript
-   :caption: ./main.js
-
-   import p5 from "p5";
-   
-   new p5((s) => {
-     s.setup = () => {
-       s.createCanvas(400, 200);
-     };
-     s.draw = () => {
-       s.background(200);
-       s.ellipse(200, 100, 100, 100);
-     };
-   });
-
-
-Development Server
-..................
-
-.. code-block:: console
-
-   npm run dev
-   npm run build
-
-
-
-Standalone Version
-..................
-
-.. code-block:: javascript
-   :caption: ./vite.config.js
-
-   // vite.config.js
-   import { defineConfig } from "vite";
-   import { viteSingleFile } from "vite-plugin-singlefile";
-   
-   export default defineConfig(({ command, mode }) => {
-     const isSingle = mode === "singlefile";
-   
-     return {
-       base: "./",
-       plugins: isSingle ? [viteSingleFile()] : [],
-       build: {
-         outDir: isSingle ? "dist-single" : "dist",
-       },
-     };
-   });
-
-
-
-.. code-block:: console
-
-   npm install --save-dev vite-plugin-singlefile
-   npm run build
-
-Taking Screenshots
-""""""""""""""""""
-
-
-.. code-block:: console
-
-   # add delay
-   sleep 0.2 && maim  ~/Pictures/region.png# add delay# add delay
-   
-   # select region
-   m -s ~/Pictures/region.png
-   
-   # screenshot to clipboard
-   maim -s | xclip -selection clipboard -t image/png
-
-
-Configuring Touchpads
-"""""""""""""""""""""
-
-.. code-block:: console
-
-   # list devices, look to names including "Touchpad"
-   xinput list
-
-   # Enable left/right/middle click with 1,2,3 finger tap
-   xinput set-prop "Telink Wireless PTP Receiver Touchpad" "libinput Tapping Enabled" 1
-
-   # set speed -1 .. 1 
-   xinput set-prop "Telink Wireless PTP Receiver Touchpad" "libinput Accel Speed" 0.3
-
-   
-   # list properties available to the device
-   xinput list-props "Telink Wireless PTP Receiver Touchpad"
-
-eza completion
-""""""""""""""
-
-.. code-block:: console
-
-   curl -L https://raw.githubusercontent.com/eza-community/eza/main/completions/zsh/_eza \
-   -o ~/.oh-my-zsh/completions/_eza
+.. }}}
+.. Arduino Workflow {{{
 
 Arduino Workflow
-""""""""""""""""
+================
 
 Install `arduino-cli`
-.....................
+---------------------
 
 .. code-block:: console
 
@@ -495,6 +565,8 @@ Install `arduino-cli`
 
    ## Useful commands (one-liners you’ll run from a tmux pane)
    ## ________________________________________________________
+
+   arduino-cli board list
 
    # Find the serial device (after plugging board in):
    ls /dev/ttyACM* /dev/ttyUSB* 2>/dev/null || echo "no device"
@@ -533,3 +605,6 @@ Install `arduino-cli`
    clean:
    	# arduino-cli doesn't have a 'clean' but you can remove build dir if needed
    	rm -rf $(shell arduino-cli compile --fqbn $(FQBN) $(SKETCH) 2>/dev/null | sed -n 's/^.*Using.*work dir: //p')
+
+.. }}}
+. }}}
