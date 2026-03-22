@@ -1,5 +1,5 @@
 Installing Debian Linux on Home Computers
-=========================================
+#########################################
 
 When the installation process involves searching for information in
 various places and scrambling resources from half forgotten locations then
@@ -23,7 +23,9 @@ speed and the reliability of the repositories. With a bit of luck a new
 system can be set up in few hours.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 6
 
    installation.rst
    configuration.rst
+
+.. todolist::
