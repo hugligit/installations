@@ -1,0 +1,16 @@
+/* Code blocks */
+
+/*body {*/
+/*    background: magenta !important;*/
+/*}*/
+
+@font-face {
+    font-family: "JetBrains Mono";
+    src: url("fonts/JetBrainsMono-Regular.woff2") format("woff2");
+}
+
+
+div.highlight pre {
+    font-size: 1.00em !important;
+    font-family: "JetBrains Mono", monospace !important;
+}
