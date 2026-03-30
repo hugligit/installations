@@ -607,4 +607,18 @@ Install `arduino-cli`
    	rm -rf $(shell arduino-cli compile --fqbn $(FQBN) $(SKETCH) 2>/dev/null | sed -n 's/^.*Using.*work dir: //p')
 
 .. }}}
-. }}}
+
+
+
+.. PDF {{{
+
+PDF
+===
+
+
+.. code-block:: console
+
+   pdftk one.pdf two.pdf cat output out.pdf
+
+.. }}}
+.. }}}
